@@ -28,6 +28,9 @@ module AGEX_STAGE(
   wire [`DBITS-1:0] pcplus_AGEX; 
   wire [`IOPBITS-1:0] op_I_AGEX;
   reg br_cond_AGEX; // 1 means a branch condition is satisified. 0 means a branch condition is not satisifed 
+  reg  [`DBITS-1:0] regword1_AGEX;
+  reg  [`DBITS-1:0] regword2_AGEX;
+  reg  [`DBITS-1:0] sxt_imm_AGEX;
 
 
  
@@ -50,15 +53,13 @@ module AGEX_STAGE(
 
 
  // compute ALU operations  (alu out or memory addresses)
- 
+  reg [`DBITS-1:0] result_AGEX;
   always @ (*) begin
-  /*
-  case (op_I_AGEX)
-    `ADD_I: 
-       //  ...
+    case (op_I_AGEX)
+      `ADDI_I: result_AGEX = regword1_AGEX + sxt_imm_AGEX;
+      `ADD_I: result_AGEX = regword1_AGEX + regword2_AGEX;
 
-	 endcase 
-   */
+	endcase 
   end 
 
 // branch target needs to be computed here 
@@ -79,8 +80,11 @@ end
                                   PC_AGEX,
                                   pcplus_AGEX,
                                   op_I_AGEX,
-                                  inst_count_AGEX
+                                  inst_count_AGEX,
                                           // more signals might need
+                                  regword1_AGEX,
+                                  regword2_AGEX,
+                                  sxt_imm_AGEX
                                   } = from_DE_latch; 
     
  
@@ -89,8 +93,9 @@ end
                                 inst_AGEX,
                                 PC_AGEX,
                                 op_I_AGEX,
-                                inst_count_AGEX
+                                inst_count_AGEX,
                                        // more signals might need
+                                result_AGEX
                                  }; 
  
   always @ (posedge clk ) begin

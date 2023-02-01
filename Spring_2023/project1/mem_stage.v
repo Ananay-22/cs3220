@@ -33,7 +33,7 @@ module MEM_STAGE(
   wire [`INSTBITS-1:0] inst_MEM; 
   wire [`DBITS-1:0] PC_MEM;
  
-
+  wire [`DBITS-1:0] result_MEM;
 
 // **TODO: Complete the rest of the pipeline 
 
@@ -64,8 +64,9 @@ module MEM_STAGE(
                                 inst_MEM,
                                 PC_MEM,
                                 op_I_MEM,
-                                inst_count_MEM
+                                inst_count_MEM,
                                  // more signals might need
+                                result_MEM
                                  } = from_AGEX_latch;  
  
 
@@ -75,8 +76,9 @@ module MEM_STAGE(
                                 inst_MEM,
                                 PC_MEM,
                                 op_I_MEM,
-                                inst_count_MEM
-                                        // more signals might need                 
+                                inst_count_MEM,
+                                        // more signals might need
+                                result_MEM                 
    };
  
 

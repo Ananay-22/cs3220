@@ -192,9 +192,11 @@ end
 //////////////////////////////////
     // **TODO: Complete the rest of the pipeline 
 
-   reg  [`DBITS-1:0] sxt_imm_DE;
+reg  [`DBITS-1:0] regword1_DE;
+reg  [`DBITS-1:0] regword2_DE;
+reg  [`DBITS-1:0] sxt_imm_DE;
 always @(*) begin 
-  case (type_immediate_DE )  
+  case (type_immediate_DE)  
   `I_immediate: 
     sxt_imm_DE = {{21{inst_DE[31]}}, inst_DE[30:25], inst_DE[24:21], inst_DE[20]}; 
     /*
@@ -213,7 +215,14 @@ always @(*) begin
 end 
    wire wr_reg_WB; 
  
+always @(*) begin
+  case (type_I_DE)
+    `I_Type:
+      regword1_DE = regs[inst_DE[19:15]];
+  
+  endcase
 
+end
 
 
  
@@ -229,6 +238,8 @@ end
 
   wire pipeline_stall_DE; 
   assign from_DE_to_FE = {pipeline_stall_DE}; // pass the DE stage stall signal to FE stage 
+
+  assign pipeline_stall_DE = 0;
 
 
 // decoding the contents of FE latch out. the order should be matched with the fe_stage.v 
@@ -250,8 +261,11 @@ end
                                   PC_DE,
                                   pcplus_DE,
                                   op_I_DE,
-                                  inst_count_DE
+                                  inst_count_DE,
                                   // more signals might need
+                                  regword1_DE,
+                                  regword2_DE,
+                                  sxt_imm_DE
                                   }; 
 
 

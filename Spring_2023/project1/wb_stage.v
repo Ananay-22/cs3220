@@ -23,7 +23,6 @@ module WB_STAGE(
   
   wire [`REGNOBITS-1:0] wregno_WB; // destination register ID 
   wire [`DBITS-1:0] regval_WB;  // the contents to be written in the register file (or CSR )
-  
 
 
   // **TODO: Complete the rest of the pipeline**
@@ -34,13 +33,15 @@ module WB_STAGE(
                                 inst_WB,
                                 PC_WB,
                                 op_I_WB,
-                                inst_count_WB
-                                // more signals might need                        
+                                inst_count_WB,
+                                // more signals might need            
+                                regval_WB       
                                  } = from_MEM_latch; 
         
         // write register by sending data to the DE stage 
         
-
+assign wr_reg_WB = op_I_WB == `ADDI_I ? 1 : 0;
+assign wregno_WB = inst_WB[11:7];
 
 
 // we send register write (and CSR register) information to DE stage 
@@ -56,7 +57,7 @@ assign from_WB_to_DE = {wr_reg_WB, wregno_WB, regval_WB} ;
       for (int i = 0; i < `REGWORDS; ++i) begin
         last_WB_value[i] <= 0;
       end
-    end else begin
+  end else begin
     if (wr_reg_WB)
       last_WB_value[wregno_WB] <= regval_WB;
     end
