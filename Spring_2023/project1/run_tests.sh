@@ -15,6 +15,9 @@ case $part in
   part3) 
     rm part3_tests.log
     ;;
+  part4) 
+    rm part4_tests.log
+    ;;
 esac
 
 case $part in
@@ -60,6 +63,20 @@ case $part in
 		echo "Number of failed tests:"
 		grep -i failed part3_tests.log | wc -l
 	;;
+        part4)
+                echo RUNNING PART4$'\n'
+                for filename in $PWD/test/part4/*.mem;do
+                        echo $'\n'TESTING: $filename >> part4_tests.log
+                        IDMEMINITFILE=$filename make tests>> part4_tests.log
+                done
+                grep -E 'TESTING|Failed|Passed' part4_tests.log>part4_results.log
+                echo "Total number of tests:"
+                grep -i testing part4_tests.log | wc -l
+                echo "Number of passed tests:"
+                grep -i passed part4_tests.log | wc -l
+                echo "Number of failed tests:"
+                grep -i failed part4_tests.log | wc -l
+        ;;
 	all)
 		echo RUNNING ALL$'\n'
 		for filename in $PWD/test/part*/*.vmh;do
@@ -75,6 +92,6 @@ case $part in
 		grep -i failed part3_tests.log | wc -l
 	;;
 	*)
-		echo INVALID PART. Use part1, part2, part2 or all as command line argument
+		echo INVALID PART. Use part1, part2, part3, part4 or all as command line argument
 	;;
 esac
